@@ -62,3 +62,13 @@ dtb
 # nycflights13
 library(nycflights13)
 str(flights)
+flights <- data.table(flights)
+flights[, date := as.Date(paste(year,month,day, sep = "-"))] # ":=" new column
+flights$weekday <- weekdays(flights$date) # do not use "<-" as it copies object within memory (in case of few GBs data it does matter)
+flights[, weekday := weekdays(date)]
+Sys.getlocale()
+str(airports)
+flights <- merge(nycflights13::flights,nycflights13::airports, by.x = "dest", by.y = "faa")
+str(flights)
+flights <- merge(nycflights13::flights,nycflights13::airports, by.x = "dest", by.y = "faa", all.x = TRUE)
+str(flights)

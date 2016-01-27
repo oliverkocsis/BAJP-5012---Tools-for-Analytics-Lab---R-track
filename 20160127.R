@@ -26,3 +26,16 @@ mtcars %>% ggplot(aes(x = carb, y = hp)) + geom_boxplot() + theme_minimal()
 mtcars %>% ggplot(aes(x = hp, y = wt)) + geom_point(aes(color = carb), size = 3) + theme_minimal()
 # horsepower and weight by the number of carburetors with a trend line
 mtcars %>% ggplot(aes(x = hp, y = wt)) + geom_point(aes(color = carb), size = 3) + geom_smooth(method = "lm") + theme_minimal()
+
+# FTSE Index from HTML table
+library(XML)
+ftse <- readHTMLTable(readLines("https://en.wikipedia.org/wiki/FTSE_100_Index"), which = 2, header = TRUE, stringsAsFactors = FALSE)
+colnames(ftse)[4] <- "Market"
+ftse$Market <- as.numeric(ftse$Market)
+ftse$Employees <- as.numeric(gsub(",", "", ftse$Employees))
+min(ftse$Employees)
+summary(ftse)
+aggregate(Employees ~ Sector, FUN = mean, data = ftse )
+subset(ftse, Employees < 1000 & Market < 5)
+
+# data.table

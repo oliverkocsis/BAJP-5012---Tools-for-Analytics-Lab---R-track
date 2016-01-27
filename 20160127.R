@@ -39,3 +39,26 @@ aggregate(Employees ~ Sector, FUN = mean, data = ftse )
 subset(ftse, Employees < 1000 & Market < 5)
 
 # data.table
+library(data.table)
+library(hflights)
+dt <- data.table(hflights)
+subset(dt, Dest == "LAX")
+dt[Dest == "LAX", list(Dest, DepTime, ArrTime)]
+dt[,sum(Cancelled)]
+dt[,.N, by = Dest]
+dt[,list(cancelled = sum(Cancelled)), by = Dest]
+dt[,.(Cancelled = sum(Cancelled), .N, sum(ArrDelay, na.rm = TRUE)), by = Dest] # "." characters means list
+dt[ArrDelay >= 0,.(Cancelled = sum(Cancelled), .N, sum(ArrDelay, na.rm = TRUE)), by = Dest]
+dta <- dt[ArrDelay >= 0][,.(Cancelled = sum(Cancelled), .N, ArrDelay = sum(ArrDelay, na.rm = TRUE)), by = Dest] # Chaining
+dta[order(N)]
+setorder(dta, N)
+dta
+setorder(dta, Dest, -N)
+dtb <- dt[,list(cancelled = sum(Cancelled)), by = .(Origin, Dest)]
+dtb
+setorder(dtb, Origin, Dest)
+dtb
+
+# nycflights13
+library(nycflights13)
+str(flights)

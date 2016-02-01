@@ -72,3 +72,52 @@ flights <- merge(nycflights13::flights,nycflights13::airports, by.x = "dest", by
 str(flights)
 flights <- merge(nycflights13::flights,nycflights13::airports, by.x = "dest", by.y = "faa", all.x = TRUE)
 str(flights)
+
+# Further data.table exercises on the nycflights13 dataset to practice for the !!!exam!!!:
+library(data.table)
+library(nycflights13)
+library(ggplot2)
+# count the number of flights to LAX
+str(flights)
+str(airports)
+flights <- data.table(nycflights13::flights)
+airports <- data.table(nycflights13::airports)
+flights[, .N]
+# count the number of flights to LAX
+flights[dest == "LAX", .N]
+# count the number of flights to LAX from JFK
+flights[origin == "JFK" & dest == "LAX", .N]
+# compute the average delay (in minutes) for flights from JFK to LAX
+flights[origin == "JFK" & dest == "LAX", .(avg_arr_delay = mean(arr_delay, na.rm = TRUE))]
+# which destination has the lowest average delay from JFK?
+average_delays <- flights[origin == "JFK", .(avg_arr_delay = mean(arr_delay, na.rm = TRUE)), by = .(dest)]
+average_delays[order(avg_arr_delay)][1]
+average_delays[which.min(avg_arr_delay)]
+# plot the average delay to all destinations from JFK
+ggplot(average_delays, aes(x = dest, y = avg_arr_delay)) + geom_point()
+ggplot(average_delays, aes(x = dest, y = avg_arr_delay)) + geom_bar(stat = "identity")
+setorder(average_delays, avg_arr_delay)
+average_delays[, dest_factor := factor(dest, levels = average_delays$dest)]
+plot <- ggplot(average_delays, aes(x = dest_factor, y = avg_arr_delay))
+plot + geom_bar(stat = "identity")
+plot + geom_bar(stat = "identity") + coord_flip() # y must be numeric
+plot + geom_bar(stat = "identity") + ggtitle("Average delays of destinations from JFK") # y must be numeric
+# plot the distribution of all flight delays to all destinations from JFK
+ggplot(flights[origin == "JFK"], aes(x = dest, y = arr_delay)) + geom_point()
+
+library(jsonlite)
+distance <- function(origin, dest) {
+  json <- fromJSON(paste("https://maps.googleapis.com/maps/api/distancematrix/json?origins=", origin, "&destinations=" ,dest, "&key=AIzaSyDDQXzayXlGiNCLgRHyX18L2MqZ2fudXwo", sep = ""))
+}
+
+distance("JFK", "LAX")
+
+# compute a new variable in flights showing the week of day
+# plot the number of flights per weekday
+# create a heatmap on the number of flights per weekday and hour of the day (see geom_tile)
+# merge the airports dataset to flights on the FAA airport code
+# order the weather dataset by year, month, day and hour
+# plot the average temperature at noon in EWR for each month based on the weather dataset
+# aggregate the weather dataset and store as daily_temperatures to show the daily average temperatures based on the EWR records
+# merge the daily_temperatures dataset to flights on the date
+# do the above two steps on daily + hourly temperature averages

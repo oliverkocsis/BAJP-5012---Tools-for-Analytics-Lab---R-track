@@ -40,7 +40,7 @@ df[, ratio := wt / hp]
 summary(df)
 # Plot the distribution of this new variable on a boxplot
 boxplot(df$ratio)
-ggplot(df, aes(x = ratio)) + geom_boxplot()
+# ggplot(df, aes(x = ratio)) + geom_boxplot()
 # Create an aggregated dataset on mtcars including the average hp and wt grouped by the number of gears
 df[, .(avg_hp = mean(hp), avg_wt = mean(wt)), by = gear]
 # Merge the average hp and wt per gears from the above dataset to the original df object based on the number of gears
@@ -65,8 +65,8 @@ df$am <- as.factor(df$am)
 set.seed(2016)
 l <- dim(df)[1]
 i <- sample(1:l, as.integer(l * 0.75))
-train = df[i, -1, with = FALSE]
-test = df[-i, -1, with = FALSE]
+train = df[i, -1]
+test = df[-i, -1]
 ct <- rpart(am ~ ., data = train)
 summary(ct)
 # Visualize the above decision tree
@@ -78,7 +78,7 @@ table(test$am, predict(ct, newdata = test, type = "class"))
 library(class)
 ratio = data.frame(k = 0, error = 0)
 for (k in 1:as.integer(l / 2)) {
-  res <- knn(train[,-10, with = FALSE], test[,-10, with = FALSE], train$am, k = k)
+  res <- knn(train[,-10], test[,-10], train$am, k = k)
   conf <- table(test$am, res)
   TP <- conf[2,2] / (conf[2,2] + conf[2,1])
   TN <- conf[1,1] / (conf[1,1] + conf[1,2])

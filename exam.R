@@ -61,6 +61,18 @@ ct <- rpart(origin ~ ., data = train)
 summary(ct)
 plot(ct)
 text(ct)
-
+table(test$origin, predict(ct, newdata = test, type = "class")) # Confusion matrix
 ## Apply k-means or hierarchical clustering on the dataset to split the observations into 3 groups
+# k-means
+kc <- kmeans(auto[,1:6], centers = 3) # Not using year, origin, and name
+summary(kc)
+table(kc$cluster, auto$origin)
+# hierarchical
+dm <- dist(auto[,1:6])
+hc <- hclust(dm)
+plot(hc)
+rect.hclust(hc, k = 3, border = 'red')
+cn <- cutree(hc, k = 3)
+table(cn, auto$origin)
+
 ## Bonus exercise: train a reasonable k-NN or other ML model classifying cars as American VS other origin (target for AUC > 0.95)

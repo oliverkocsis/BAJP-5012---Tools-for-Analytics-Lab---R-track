@@ -1,0 +1,38 @@
+---
+title: "PresentationByMarkdown"
+output: ioslides_presentation
+---
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Code and Output
+
+```{r, echo=FALSE}
+library(pander)
+fit <- lm(wt ~ hp, data = mtcars)
+pander(fit)
+```
+
+## Slide with Plot
+
+```{r, echo=FALSE}
+library(ggplot2)
+ggplot(mtcars, aes(x = hp, y = wt)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+## Iris
+
+```{r, echo=FALSE}
+library(pander)
+pander(iris)
+```

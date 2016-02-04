@@ -1,0 +1,32 @@
+---
+title: "A Demo Shiny R Markdown Document"
+author: "Gergely Daroczi"
+date: '2016-02-03'
+output: html_document
+runtime: shiny
+---
+
+Markdown is a simple markup language to format plain text files, eg using *italic* or **bold** font, or sometimes even ***both*** or ~~none~~ at all. We can also refer to inline `code` examples, or use syntax highlighting for larger code chunks:
+
+```r
+n <- 100
+x <- rpois(n, 10)
+summary(x)
+hist(x)
+```
+
+But we can also evaluate `r "R"` code inline or in separate code chunks as well:
+
+```{r}
+library(shiny)
+inputPanel(
+  sliderInput("n", "n", min = 1, max = 1000, value = 100), 
+  sliderInput("lambda", "lambda", min = 10, max = 100, value = 50)
+)
+renderPlot({
+  n <- input$n
+  lambda <- input$lambda
+  x <- rpois(n, lambda)
+  hist(x)
+})
+```

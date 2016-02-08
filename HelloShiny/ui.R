@@ -15,16 +15,34 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      sliderInput("bins",
-                  "Number of bins:",
+      sliderInput("complexity",
+                  "Complexity",
                   min = 1,
-                  max = 50,
-                  value = 30)
+                  max = 16,
+                  value = 1),
+      selectInput("x",
+                  "Variable (X)",
+                  choices = names(mtcars),
+                  selected = "wt"),
+      selectInput("y",
+                  "Variable (Y)",
+                  choices = names(mtcars),
+                  selected = "hp"),
+      selectInput("color",
+                  "Color",
+                  choices = names(mtcars),
+                  selected = "am")
+      
     ),
 
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("distPlot")
+      tabsetPanel(
+        tabPanel("Plot", plotOutput("distPlot")),
+        tabPanel("GGplot", plotOutput("ggplot")),
+        tabPanel("Model", verbatimTextOutput("model")),
+        tabPanel("Coefficients", tableOutput("coeff"))
+      )
     )
   )
 ))

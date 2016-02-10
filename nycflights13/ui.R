@@ -39,7 +39,10 @@ shinyUI(fluidPage(
                  h2("Distances"), plotOutput("distance"),
                  h2("Air Times"), plotOutput("air_time"),
                  h2("Arrival Delays"), plotOutput("arr_dellay")),
-        tabPanel("Carrier Info", tableOutput("carriers"))
+        tabPanel("Tables", 
+                 h2("Carriers"), dataTableOutput("carriers"),
+                 h2("Origins"), dataTableOutput("origins"),
+                 h2("Destinationss"), dataTableOutput("dests"))
       )
     )
   )

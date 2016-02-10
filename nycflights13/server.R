@@ -6,6 +6,7 @@
 #
 
 library(shiny)
+library(data.table)
 library(ggplot2)
 source("model.R")
 
@@ -41,7 +42,15 @@ shinyServer(function(input, output) {
       theme_minimal()
   })
   
-  output$carriers <- renderTable({
-    flights[date == input$date & distance <= input$distance, .( Count = .N, "Average Distance" = mean(distance, na.rm = TRUE), "Average Air Time" = mean(air_time, na.rm = TRUE), "Average Delay" = mean(arr_delay, na.rm = TRUE), "Max Delay" = max(arr_delay, na.rm = TRUE)), by = carrier]
+  output$carriers <- renderDataTable({
+    flights[date == input$date & distance <= input$distance, .( Count = .N, "Average Distance" = mean(distance, na.rm = TRUE), "Average Air Time" = mean(air_time, na.rm = TRUE), "Average Delay" = mean(arr_delay, na.rm = TRUE), "Max Delay" = max(arr_delay, na.rm = TRUE)), by = carrier.name]
+  })
+  
+  output$origins <- renderDataTable({
+    flights[date == input$date & distance <= input$distance, .( Count = .N, "Average Distance" = mean(distance, na.rm = TRUE), "Average Air Time" = mean(air_time, na.rm = TRUE), "Average Delay" = mean(arr_delay, na.rm = TRUE), "Max Delay" = max(arr_delay, na.rm = TRUE)), by = origin.name]
+  })
+  
+  output$dests <- renderDataTable({
+    flights[date == input$date & distance <= input$distance, .( Count = .N, "Average Distance" = mean(distance, na.rm = TRUE), "Average Air Time" = mean(air_time, na.rm = TRUE), "Average Delay" = mean(arr_delay, na.rm = TRUE), "Max Delay" = max(arr_delay, na.rm = TRUE)), by = dest.name]
   })
 })

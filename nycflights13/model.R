@@ -1,4 +1,5 @@
 library(data.table)
+library(nycflights13)
 
 rm(flights)
 flights <- merge(flights, airports[,1:2], by.x = "origin", by.y = "faa")

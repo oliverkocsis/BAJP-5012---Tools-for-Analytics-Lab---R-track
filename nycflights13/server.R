@@ -12,42 +12,46 @@ source("model.R")
 
 shinyServer(function(input, output) {
   
+  getFlights <- reactive({
+    flights[date >= input$date[1] & date <= input$date[2] & distance <= input$distance]
+  })
+  
   output$distance_airtime <- renderPlot({
-    ggplot(flights[date >= input$date[1] & date <= input$date[2] & distance <= input$distance], aes(distance, air_time)) + 
+    ggplot(getFlights(), aes(distance, air_time)) + 
       geom_point(aes(color = carrier)) + 
       theme_minimal()
   })
   
   output$distance_arr_delay <- renderPlot({
-    ggplot(flights[date >= input$date[1] & date <= input$date[2] & distance <= input$distance], aes(distance, arr_delay)) + 
+    ggplot(getFlights(), aes(distance, arr_delay)) + 
       geom_point(aes(color = carrier)) + 
       theme_minimal()
   })
   
   output$distance <- renderPlot({
-    ggplot(flights[date == input$date & distance <= input$distance], aes(carrier, distance)) + 
+    ggplot(getFlights(), aes(carrier, distance)) + 
       geom_boxplot() +
       theme_minimal()
   })
   
   output$air_time <- renderPlot({
-    ggplot(flights[date == input$date & distance <= input$distance], aes(carrier, air_time)) + 
+    ggplot(getFlights(), aes(carrier, air_time)) + 
       geom_boxplot() +
       theme_minimal()
   })
   
   output$arr_dellay <- renderPlot({
-    ggplot(flights[date == input$date & distance <= input$distance], aes(carrier, arr_delay)) + 
+    ggplot(getFlights(), aes(carrier, arr_delay)) + 
       geom_boxplot() +
       theme_minimal()
   })
   
   output$carriers <- renderDataTable({
-    flights[date == input$date & distance <= input$distance, .( Count = .N, "Average Distance" = mean(distance, na.rm = TRUE), "Average Air Time" = mean(air_time, na.rm = TRUE), "Average Delay" = mean(arr_delay, na.rm = TRUE), "Max Delay" = max(arr_delay, na.rm = TRUE)), by = carrier.name]
+    getFlights()[, .( Count = .N, "Average Distance" = mean(distance, na.rm = TRUE), "Average Air Time" = mean(air_time, na.rm = TRUE), "Average Delay" = mean(arr_delay, na.rm = TRUE), "Max Delay" = max(arr_delay, na.rm = TRUE)), by = carrier.name]
   })
   
   output$origins <- renderDataTable({
-    flights[date == input$date & distance <= input$distance, .( Count = .N, "Average Distance" = mean(distance, na.rm = TRUE), "Average Air Time" = mean(air_time, na.rm = TRUE), "Average Delay" = mean(arr_delay, na.rm = TRUE), "Max Delay" = max(arr_delay, na.rm = TRUE)), by = origin.name]
+    getFlights()[, .( Count = .N, "Average Distance" = mean(distance, na.rm = TRUE), "Average Air Time" = mean(air_time, na.rm = TRUE), "Average Delay" = mean(arr_delay, na.rm = TRUE), "Max Delay" = max(arr_delay, na.rm = TRUE)), by = origin.name]
   })
   
   output$dests <- renderDataTable({
